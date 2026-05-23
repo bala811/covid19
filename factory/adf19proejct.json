@@ -1,0 +1,15 @@
+{
+	"name": "adf19proejct",
+	"properties": {
+		"trustModeClaimForMi": {
+			"value": "Enabled",
+			"editable": true
+		}
+	},
+	"location": "centralindia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "bfaa4e8f-b10c-4d7c-a57b-56ddcacd2a27",
+		"tenantId": "f578ac39-d96a-4dd0-bb3c-115c5747f91c"
+	}
+}

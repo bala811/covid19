@@ -1,0 +1,123 @@
+{
+	"name": "df_transform_",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "df_ds_cases_deaths",
+						"type": "DatasetReference"
+					},
+					"name": "cases1and1death1source"
+				},
+				{
+					"dataset": {
+						"referenceName": "ds_Country_codes_lookup",
+						"type": "DatasetReference"
+					},
+					"name": "country1lookup"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "ds_destination_adlsgen2",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "filter1europe1continent1only",
+					"description": "keep only Europe continent data and remove other data including blanks"
+				},
+				{
+					"name": "select1required1columns",
+					"description": "remove columns rate_!4 and continent.\ndelete  date column and add back it using rule based mapping for practice"
+				},
+				{
+					"name": "pivotdata"
+				},
+				{
+					"name": "lookup"
+				},
+				{
+					"name": "select1processed1columns"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          country as string,",
+				"          country_code as string,",
+				"          continent as string,",
+				"          population as integer,",
+				"          indicator as string,",
+				"          daily_count as integer,",
+				"          date as date,",
+				"          rate_14_day as double,",
+				"          source as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> cases1and1death1source",
+				"source(output(",
+				"          country as string,",
+				"          country_code_2_digit as string,",
+				"          country_code_3_digit as string,",
+				"          continent as string,",
+				"          population as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> country1lookup",
+				"cases1and1death1source filter(continent =='Europe' &&not(isNull(country_code))) ~> filter1europe1continent1only",
+				"filter1europe1continent1only select(mapColumn(",
+				"          country,",
+				"          country_code,",
+				"          population,",
+				"          indicator,",
+				"          daily_count,",
+				"          source,",
+				"          each(match(name=='date'),",
+				"               'reported_date' = $$)",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1required1columns",
+				"select1required1columns pivot(groupBy(country,",
+				"          country_code,",
+				"          population,",
+				"          daily_count,",
+				"          reported_date,",
+				"          source),",
+				"     pivotBy(indicator, ['confirmed cases', 'deaths']),",
+				"     count = sum(daily_count),",
+				"     columnNaming: '$V_$N',",
+				"     lateral: false) ~> pivotdata",
+				"pivotdata, country1lookup lookup(pivotdata@country == country1lookup@country,",
+				"     multiple: true,",
+				"     broadcast: 'auto')~> lookup",
+				"lookup select(mapColumn(",
+				"          country = pivotdata@country,",
+				"          country_code_2_digit,",
+				"          country_code_3_digit,",
+				"          population = pivotdata@population,",
+				"          cases_count = {confirmed cases_count},",
+				"          deaths_count,",
+				"          reported_date,",
+				"          source",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1processed1columns",
+				"select1processed1columns sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
