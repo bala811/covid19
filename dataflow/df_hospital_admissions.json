@@ -48,6 +48,16 @@
 				},
 				{
 					"name": "split1"
+				},
+				{
+					"name": "derivedColumn1year1week",
+					"description": "adding new column by concating year and week number columns"
+				},
+				{
+					"name": "aggregate1year1week1to1define1start1date1and1end1date"
+				},
+				{
+					"name": "inner1join"
 				}
 			],
 			"scriptLines": [
@@ -121,9 +131,18 @@
 				"     ),",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> select2",
-				"select2 split(startsWith(indicator, 'Daily'),",
-				"     disjoint: false) ~> split1@(daily, weekly)",
-				"split1@daily sink(allowSchemaDrift: true,",
+				"select2 split(startsWith(indicator, 'Weekly'),",
+				"     disjoint: false) ~> split1@(Weekly, Daily)",
+				"ds0df0date0dim derive(ecdc_year_week = year + '-W'+lpad(week_of_year,2,'0')) ~> derivedColumn1year1week",
+				"derivedColumn1year1week aggregate(groupBy(ecdc_year_week),",
+				"     week_start_date = min(date),",
+				"          week_end_date = max(date)) ~> aggregate1year1week1to1define1start1date1and1end1date",
+				"split1@Weekly, aggregate1year1week1to1define1start1date1and1end1date join(reported_year_week == ecdc_year_week,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> inner1join",
+				"inner1join sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     umask: 0022,",
 				"     preCommands: [],",
