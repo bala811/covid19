@@ -96,7 +96,7 @@
 				"          url as string",
 				"     ),",
 				"     allowSchemaDrift: true,",
-				"     validateSchema: true,",
+				"     validateSchema: false,",
 				"     limit: 2000,",
 				"     ignoreNoFilesFound: false,",
 				"     enableCdc: true,",
