@@ -5,6 +5,9 @@
 		"factoryName": {
 			"value": "adf19proejct"
 		},
+		"ds_processed_hospital_admissions_accountKey": {
+			"value": ""
+		},
 		"ls_population_destination_adls2_accountKey": {
 			"value": ""
 		},
@@ -13,6 +16,9 @@
 		},
 		"HttpServer_properties_typeProperties_url": {
 			"value": "@{linkedService().base_url}"
+		},
+		"ds_processed_hospital_admissions_properties_typeProperties_url": {
+			"value": "https://covid19adlsgen2.dfs.core.windows.net/"
 		},
 		"ls_population_destination_adls2_properties_typeProperties_url": {
 			"value": "https://covid19adlsgen2.dfs.core.windows.net/"
