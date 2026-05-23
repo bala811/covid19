@@ -17,12 +17,7 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "df_hospital_admissions",
-						"type": "DataFlowReference",
-						"datasetParameters": {
-							"sinkWeekly": {
-								"filename": "admissions"
-							}
-						}
+						"type": "DataFlowReference"
 					},
 					"compute": {
 						"coreCount": 8,
