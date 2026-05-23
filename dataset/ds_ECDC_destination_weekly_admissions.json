@@ -1,5 +1,5 @@
 {
-	"name": "ds_ECDC_destination_adlsgen2",
+	"name": "ds_ECDC_destination_weekly_admissions",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ds_processed_hospital_admissions",
@@ -15,7 +15,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "processed/weeklyadmissions",
+				"folderPath": "processed/weekly admissions",
 				"fileSystem": "raw"
 			},
 			"columnDelimiter": "\t",

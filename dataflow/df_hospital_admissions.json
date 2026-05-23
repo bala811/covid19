@@ -29,14 +29,14 @@
 			"sinks": [
 				{
 					"dataset": {
-						"referenceName": "ds_ECDC_destination_adlsgen2",
+						"referenceName": "ds_ECDC_destination_weekly_admissions",
 						"type": "DatasetReference"
 					},
 					"name": "sinkWeekly"
 				},
 				{
 					"dataset": {
-						"referenceName": "ds_ECDC_destination_adlsgen2",
+						"referenceName": "ds_ecdc_destination_daily_Admissions",
 						"type": "DatasetReference"
 					},
 					"name": "sinkDaily"
@@ -230,6 +230,9 @@
 				"     skipDuplicateMapOutputs: true) ~> sinkWeekly",
 				"select3 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          {country     country_code_2_digit     country_code_3_digit     population     cases_count     deaths_count     reported_date     source} as string",
+				"     ),",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
