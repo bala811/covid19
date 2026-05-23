@@ -514,8 +514,7 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "weeklyAdmissions",
-						"folderPath": "processed/weekly admissions",
+						"folderPath": "processed/weeklyAdmissions",
 						"fileSystem": "raw"
 					},
 					"columnDelimiter": "\t",
@@ -609,7 +608,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobFSLocation",
-						"fileName": "dailyAdmissions",
 						"folderPath": "processed/dailyAdmissions",
 						"fileSystem": "raw"
 					},
