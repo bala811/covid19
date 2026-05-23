@@ -10,6 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "weeklyAdmissions",
 				"folderPath": "processed/weekly admissions",
 				"fileSystem": "raw"
 			},
