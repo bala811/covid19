@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adf19proejct"
+		},
+		"ls_population_destination_adls2_accountKey": {
+			"value": ""
+		},
+		"ls_population_source_sa_connectionString": {
+			"value": ""
+		},
+		"HttpServer_properties_typeProperties_url": {
+			"value": "@{linkedService().base_url}"
+		},
+		"ls_population_destination_adls2_properties_typeProperties_url": {
+			"value": "https://covid19adlsgen2.dfs.core.windows.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
