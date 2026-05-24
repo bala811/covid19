@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_population_source_sa'"
 		},
+		"ls_temp_op_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_temp_op'"
+		},
 		"HttpServer_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{linkedService().base_url}"
@@ -28,6 +32,10 @@
 			"defaultValue": "https://covid19adlsgen2.dfs.core.windows.net/"
 		},
 		"ls_population_destination_adls2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://covid19adlsgen2.dfs.core.windows.net/"
+		},
+		"ls_temp_op_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://covid19adlsgen2.dfs.core.windows.net/"
 		}
@@ -100,6 +108,23 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('ls_population_source_sa_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ls_temp_op')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('ls_temp_op_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('ls_temp_op_accountKey')]"
+					}
 				}
 			},
 			"dependsOn": []
@@ -521,6 +546,33 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "ls_temp_op",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobFSLocation",
+						"fileSystem": "tempop"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/ls_temp_op')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/ECDC_GIT_SOURCES_TO_ADLS')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -700,6 +752,13 @@
 								"type": "DatasetReference"
 							},
 							"name": "sinkDaily"
+						},
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "temp1output"
 						}
 					],
 					"transformations": [
@@ -814,9 +873,9 @@
 						"          country_code_3_digit,",
 						"          population",
 						"     ),",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> select2",
-						"select2 split(startsWith(indicator, 'Weekly'),",
+						"     skipDuplicateMapInputs: false,",
+						"     skipDuplicateMapOutputs: false) ~> select2",
+						"select2 split(indicator =='Weekly new hospital admissions per 100k'|| indicator == 'Weekly new ICU admissions per 100k',",
 						"     disjoint: false) ~> split1@(Weekly, Daily)",
 						"ds0df0date0dim derive(ecdc_year_week = year + '-W'+lpad(week_of_year,2,'0')) ~> derivedColumn1year1week",
 						"derivedColumn1year1week aggregate(groupBy(ecdc_year_week),",
@@ -903,7 +962,14 @@
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> sinkDaily"
+						"     skipDuplicateMapOutputs: true) ~> sinkDaily",
+						"select2 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> temp1output"
 					]
 				}
 			},
@@ -912,7 +978,8 @@
 				"[concat(variables('factoryId'), '/datasets/ds_Country_codes_lookup')]",
 				"[concat(variables('factoryId'), '/datasets/df_ds_dim_dates_lookup')]",
 				"[concat(variables('factoryId'), '/datasets/ds_ECDC_destination_weekly_admissions')]",
-				"[concat(variables('factoryId'), '/datasets/ds_ecdc_destination_daily_Admissions')]"
+				"[concat(variables('factoryId'), '/datasets/ds_ecdc_destination_daily_Admissions')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]"
 			]
 		},
 		{
@@ -1121,7 +1188,8 @@
 									"source1country1code1lookup": {},
 									"ds0df0date0dim": {},
 									"sinkWeekly": {},
-									"sinkDaily": {}
+									"sinkDaily": {},
+									"temp1output": {}
 								}
 							},
 							"staging": {},

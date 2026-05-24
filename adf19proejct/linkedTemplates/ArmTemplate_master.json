@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'ls_population_source_sa'"
 		},
+		"ls_temp_op_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'ls_temp_op'"
+		},
 		"HttpServer_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "@{linkedService().base_url}"
@@ -28,6 +32,10 @@
 			"defaultValue": "https://covid19adlsgen2.dfs.core.windows.net/"
 		},
 		"ls_population_destination_adls2_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://covid19adlsgen2.dfs.core.windows.net/"
+		},
+		"ls_temp_op_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://covid19adlsgen2.dfs.core.windows.net/"
 		},
@@ -67,6 +75,9 @@
 					"ls_population_source_sa_connectionString": {
 						"value": "[parameters('ls_population_source_sa_connectionString')]"
 					},
+					"ls_temp_op_accountKey": {
+						"value": "[parameters('ls_temp_op_accountKey')]"
+					},
 					"HttpServer_properties_typeProperties_url": {
 						"value": "[parameters('HttpServer_properties_typeProperties_url')]"
 					},
@@ -75,6 +86,9 @@
 					},
 					"ls_population_destination_adls2_properties_typeProperties_url": {
 						"value": "[parameters('ls_population_destination_adls2_properties_typeProperties_url')]"
+					},
+					"ls_temp_op_properties_typeProperties_url": {
+						"value": "[parameters('ls_temp_op_properties_typeProperties_url')]"
 					}
 				}
 			},

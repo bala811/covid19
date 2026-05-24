@@ -14,6 +14,9 @@
 		"ls_population_source_sa_connectionString": {
 			"value": ""
 		},
+		"ls_temp_op_accountKey": {
+			"value": ""
+		},
 		"HttpServer_properties_typeProperties_url": {
 			"value": "@{linkedService().base_url}"
 		},
@@ -21,6 +24,9 @@
 			"value": "https://covid19adlsgen2.dfs.core.windows.net/"
 		},
 		"ls_population_destination_adls2_properties_typeProperties_url": {
+			"value": "https://covid19adlsgen2.dfs.core.windows.net/"
+		},
+		"ls_temp_op_properties_typeProperties_url": {
 			"value": "https://covid19adlsgen2.dfs.core.windows.net/"
 		},
 		"containerUri": {
